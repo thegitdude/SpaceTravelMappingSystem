@@ -1,0 +1,6 @@
+redirects: on
+source https://nuget.org/api/v2
+framework >= net451
+
+nuget Autofac
+nuget Newtonsoft.Json

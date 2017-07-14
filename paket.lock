@@ -1,0 +1,6 @@
+REDIRECTS: ON
+RESTRICTION: >= net451
+NUGET
+  remote: https://www.nuget.org/api/v2
+    Autofac (4.6)
+    Newtonsoft.Json (10.0.3)
