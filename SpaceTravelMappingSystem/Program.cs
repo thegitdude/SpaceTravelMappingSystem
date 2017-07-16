@@ -27,7 +27,7 @@ namespace SpaceTravelMappingSystem
                 await spaceMapGenerator.GenerateMapAndWriteToFileAsync();
 
                 var calculator = scope.Resolve<IFileInteractionService>();
-                var result = await calculator.ReadFromFileAsync<List<Planet>>("C:\\temp\\map.txt");
+                var result = await calculator.ReadFromFileAsync("C:\\temp\\map.txt");
                 Console.WriteLine("Number of Planets retrieved: " + result.Count);
             }
 

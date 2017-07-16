@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpaceTravelMappingSystem.Model;
+using System;
 
 namespace SpaceTravelMappingSystem.Service
 {
@@ -15,11 +16,11 @@ namespace SpaceTravelMappingSystem.Service
             homeZ = 3;
         }
 
-        public double GetDistanceToHomePlanet(int x, int y, int z)
+        public double GetDistanceToHomePlanet(Planet p)
         {
-            var xDiff = homeX - x;
-            var yDiff = homeY - y;
-            var zDiff = homeZ - z;
+            var xDiff = homeX - p.X;
+            var yDiff = homeY - p.Y;
+            var zDiff = homeZ - p.Z;
 
             return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2) + Math.Pow(zDiff, 3));
         }

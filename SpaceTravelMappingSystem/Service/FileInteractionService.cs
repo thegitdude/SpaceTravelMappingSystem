@@ -2,36 +2,49 @@
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using SpaceTravelMappingSystem.Model;
 
 namespace SpaceTravelMappingSystem.Service
 {
     public class FileInteractionService : IFileInteractionService
     {
         private const int BufferSize = 4096;
+        private readonly IDistanceCalculationService _distanceCalculationService;
 
-        public async Task<T> ReadFromFileAsync<T>(string filePath)
+        public FileInteractionService(IDistanceCalculationService distanceCalculationService)
+        {
+            _distanceCalculationService = distanceCalculationService;
+        }
+
+        public async Task<SortedDictionary<double, List<Planet>>> ReadFromFileAsync(string filePath)
         {
             using (FileStream sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
                     bufferSize: BufferSize, useAsync: true))
             {
-                StringBuilder sb = new StringBuilder();
+                var file = new StreamReader(sourceStream, Encoding.Unicode, true, 128);
 
-                byte[] buffer = new byte[0x1000];
-                int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                var planetDictionary = new SortedDictionary<double, List<Planet>>();
+                string lineOfText;
+                while ((lineOfText = await file.ReadLineAsync()) != null)
                 {
-                    string text = Encoding.Unicode.GetString(buffer, 0, numRead);
-                    sb.Append(text);
+                    Console.WriteLine(lineOfText);
+                    if (lineOfText.Length > 0)
+                    {
+                        var planets = JsonConvert.DeserializeObject<List<Planet>>(lineOfText);
+                        AddToDictionary(planetDictionary, planets);
+                    }
                 }
 
-                var result = sb.ToString();
-                return JsonConvert.DeserializeObject<T>(result);
+                return planetDictionary;
             }
         }
 
         public async Task WriteToFileAsync(string filePath, object data)
         {
-            var dataInJson = JsonConvert.SerializeObject(data);
+            var dataInJson = JsonConvert.SerializeObject(data) + Environment.NewLine;
+            Console.WriteLine("Writing: " + dataInJson);
             byte[] encodedText = Encoding.Unicode.GetBytes(dataInJson);
 
             using (FileStream sourceStream = new FileStream(filePath,
@@ -40,6 +53,30 @@ namespace SpaceTravelMappingSystem.Service
             {
                 await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
             };
+        }
+
+        private void AddToDictionary(SortedDictionary<double, List<Planet>> d, List<Planet> planets)
+        {
+            foreach (var planet in planets)
+            {
+                if (planet.Type != PlanetType.HungryMonster)
+                {
+                    var distanceToHomePlanet = _distanceCalculationService.GetDistanceToHomePlanet(planet);
+
+                    List<Planet> bucket;
+                    var keyExists = d.TryGetValue(distanceToHomePlanet, out bucket);
+                    if (keyExists)
+                    {
+                        bucket.Add(planet);
+                    }
+                    else
+                    {
+                        bucket = new List<Planet>();
+                        bucket.Add(planet);
+                        d.Add(distanceToHomePlanet, bucket);
+                    }
+                }
+            }
         }
     }
 }

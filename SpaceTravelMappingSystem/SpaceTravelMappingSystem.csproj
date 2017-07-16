@@ -52,8 +52,10 @@
     <Compile Include="Service\FileInteractionService.cs" />
     <Compile Include="Service\IDistanceCalculationService.cs" />
     <Compile Include="Service\IFileInteractionService.cs" />
+    <Compile Include="Service\INavigationService.cs" />
     <Compile Include="Service\IPlanetGeneratingService.cs" />
     <Compile Include="Service\ISpaceMapGenerator.cs" />
+    <Compile Include="Service\NavigationService.cs" />
     <Compile Include="Service\PlanetGeneratingService.cs" />
     <Compile Include="Service\SpaceMapGenerator.cs" />
   </ItemGroup>

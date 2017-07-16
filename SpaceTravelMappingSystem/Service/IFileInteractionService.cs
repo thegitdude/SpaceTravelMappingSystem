@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using SpaceTravelMappingSystem.Model;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpaceTravelMappingSystem.Service
 {
@@ -6,6 +8,6 @@ namespace SpaceTravelMappingSystem.Service
     {
         Task WriteToFileAsync(string filePath, object data);
 
-        Task<T> ReadFromFileAsync<T>(string filePath);
+        Task<SortedDictionary<double, List<Planet>>> ReadFromFileAsync(string filePath);
     }
 }
