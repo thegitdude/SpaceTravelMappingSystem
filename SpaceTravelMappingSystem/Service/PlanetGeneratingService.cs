@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SpaceTravelMappingSystem.Model;
 
 namespace SpaceTravelMappingSystem.Service
 {
     public class PlanetGeneratingService : IPlanetGeneratingService
     {
-        private const int planetSizeUpperLimit = 100000001;
-        private const int planetSizeLowerLimit = 0;
+        private const int PlanetSizeUpperLimit = 100000001;
+        private const int PlanetSizeLowerLimit = 1;
 
-        private const int planetCoordonateUpperLimit = 1000000000;
-        private const int planetCoordonateLowerLimit = -1;
+        private const int PlanetCoordonateUpperLimit = 1000000000;
+        private const int PlanetCoordonateLowerLimit = 0;
 
         public List<Planet> GeneratePlanets(int count)
         {
@@ -22,11 +19,11 @@ namespace SpaceTravelMappingSystem.Service
             for (int i = 0; i < count; i++)
             {
                 var planet = new Planet(
-                    GenerateRandomInteger(planetCoordonateLowerLimit, planetCoordonateUpperLimit, randomizer),
-                    GenerateRandomInteger(planetCoordonateLowerLimit, planetCoordonateUpperLimit, randomizer),
-                    GenerateRandomInteger(planetCoordonateLowerLimit, planetCoordonateUpperLimit, randomizer),
+                    GenerateRandomInteger(PlanetCoordonateLowerLimit, PlanetCoordonateUpperLimit, randomizer),
+                    GenerateRandomInteger(PlanetCoordonateLowerLimit, PlanetCoordonateUpperLimit, randomizer),
+                    GenerateRandomInteger(PlanetCoordonateLowerLimit, PlanetCoordonateUpperLimit, randomizer),
                     GenerateRandomPlanetType(randomizer),
-                    GenerateRandomInteger(planetSizeLowerLimit, planetSizeUpperLimit, randomizer));
+                    GenerateRandomInteger(PlanetSizeLowerLimit, PlanetSizeUpperLimit, randomizer));
 
                 planets.Add(planet);
             }
@@ -41,7 +38,7 @@ namespace SpaceTravelMappingSystem.Service
 
         private PlanetType GenerateRandomPlanetType(Random randomizer)
         {
-            return (PlanetType)GenerateRandomInteger(0, 2, randomizer);
+            return (PlanetType)GenerateRandomInteger(0, 3, randomizer);
         }
     }
 }

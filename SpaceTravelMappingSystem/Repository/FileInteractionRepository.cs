@@ -1,19 +1,20 @@
-﻿using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using SpaceTravelMappingSystem.Model;
-
-namespace SpaceTravelMappingSystem.Service
+﻿namespace SpaceTravelMappingSystem.Repository
 {
-    public class FileInteractionService : IFileInteractionService
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Model;
+    using Newtonsoft.Json;
+    using Service;
+
+    public class FileInteractionRepository : IFileInteractionRepository
     {
         private const int BufferSize = 4096;
         private readonly IDistanceCalculationService _distanceCalculationService;
 
-        public FileInteractionService(IDistanceCalculationService distanceCalculationService)
+        public FileInteractionRepository(IDistanceCalculationService distanceCalculationService)
         {
             _distanceCalculationService = distanceCalculationService;
         }
@@ -55,11 +56,16 @@ namespace SpaceTravelMappingSystem.Service
             };
         }
 
+        public void ClearFileContents(string filePath)
+        {
+            File.WriteAllText(filePath, String.Empty);
+        }
+
         private void AddToDictionary(SortedDictionary<double, List<Planet>> d, List<Planet> planets)
         {
             foreach (var planet in planets)
             {
-                if (planet.Type != PlanetType.HungryMonster)
+                if (planet.Type == PlanetType.Inhabitable)
                 {
                     var distanceToHomePlanet = _distanceCalculationService.GetDistanceToHomePlanet(planet);
 

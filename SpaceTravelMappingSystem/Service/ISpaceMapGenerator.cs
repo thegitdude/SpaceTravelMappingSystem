@@ -4,6 +4,6 @@ namespace SpaceTravelMappingSystem.Service
 {
     public interface ISpaceMapGenerator
     {
-        Task GenerateMapAndWriteToFileAsync();
+        Task GenerateMapAndWriteToFileAsync(string filePath);
     }
 }

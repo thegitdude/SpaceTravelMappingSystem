@@ -3,6 +3,8 @@ using SpaceTravelMappingSystem.Service;
 
 namespace SpaceTravelMappingSystem
 {
+    using Repository;
+
     public class DependencyResolver
     {
         public static IContainer ResolveDependencies()
@@ -10,7 +12,7 @@ namespace SpaceTravelMappingSystem
             var builder = new ContainerBuilder();
             builder.RegisterType<DistanceCalculationService>().As<IDistanceCalculationService>();
             builder.RegisterType<PlanetGeneratingService>().As<IPlanetGeneratingService>();
-            builder.RegisterType<FileInteractionService>().As<IFileInteractionService>();
+            builder.RegisterType<FileInteractionRepository>().As<IFileInteractionRepository>();
             builder.RegisterType<SpaceMapGenerator>().As<ISpaceMapGenerator>();
 
             return builder.Build();

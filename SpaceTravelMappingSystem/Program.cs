@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace SpaceTravelMappingSystem
 {
+    using System.Configuration;
+    using Repository;
+    using Utility;
+
     public class Program
     {
         private static IContainer Container;
@@ -18,22 +22,22 @@ namespace SpaceTravelMappingSystem
 
         static async Task Process()
         {
+            var filePath = ConfigurationReader.ReadString("filePath");
+
             Container = DependencyResolver.ResolveDependencies();
 
             using (var scope = Container.BeginLifetimeScope())
             {
                 Console.WriteLine("Starting planet generation");
                 var spaceMapGenerator = scope.Resolve<ISpaceMapGenerator>();
-                await spaceMapGenerator.GenerateMapAndWriteToFileAsync();
+                await spaceMapGenerator.GenerateMapAndWriteToFileAsync(filePath);
 
-                var calculator = scope.Resolve<IFileInteractionService>();
-                var result = await calculator.ReadFromFileAsync("C:\\temp\\map.txt");
+                var calculator = scope.Resolve<IFileInteractionRepository>();
+                var result = await calculator.ReadFromFileAsync(filePath);
                 Console.WriteLine("Number of Planets retrieved: " + result.Count);
             }
 
             Console.ReadLine();
-
-            Console.WriteLine("Hello World!");
         }
     }
 }

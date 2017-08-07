@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SpaceTravelMappingSystem.Service
+namespace SpaceTravelMappingSystem.Repository
 {
-    public interface IFileInteractionService
+    public interface IFileInteractionRepository
     {
         Task WriteToFileAsync(string filePath, object data);
 
         Task<SortedDictionary<double, List<Planet>>> ReadFromFileAsync(string filePath);
+
+        void ClearFileContents(string filePath);
     }
 }
