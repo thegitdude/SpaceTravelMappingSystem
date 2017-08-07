@@ -1,8 +1,9 @@
-﻿using SpaceTravelMappingSystem.Model;
-using System;
-
-namespace SpaceTravelMappingSystem.Service
+﻿namespace SpaceTravelMappingSystem.Service
 {
+    using System;
+    using Model;
+    using Utility;
+
     public class DistanceCalculationService : IDistanceCalculationService
     {
         private readonly int _homeX;
@@ -11,18 +12,21 @@ namespace SpaceTravelMappingSystem.Service
 
         public DistanceCalculationService()
         {
-            _homeX = 1;
-            _homeY = 2;
-            _homeZ = 3;
+            _homeX = ConfigurationReader.ReadInt("homePlanetX");
+            _homeY = ConfigurationReader.ReadInt("homePlanetY");
+            _homeZ = ConfigurationReader.ReadInt("homePlanetZ");
         }
 
+        //This is the geometrical formula for the distance between 3  point is a 3D space given 3 values on the x, y, z axys 
         public double GetDistanceToHomePlanet(Planet p)
         {
-            var xDiff = _homeX - p.X;
-            var yDiff = _homeY - p.Y;
-            var zDiff = _homeZ - p.Z;
+            double xDiff = Math.Abs(_homeX - p.X);
+            double yDiff = Math.Abs(_homeY - p.Y);
+            double zDiff = Math.Abs(_homeZ - p.Z);
 
-            return Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2) + Math.Pow(zDiff, 3));
+            var result = Math.Sqrt(Math.Pow(xDiff, 2) + Math.Pow(yDiff, 2) + Math.Pow(zDiff, 3));
+
+            return result;
         }
     }
 }

@@ -19,6 +19,7 @@
             _nrOfPlanets = ConfigurationReader.ReadInt("nrOfPlanets");
         }
 
+        //I decided to use batching so I don't over use memory. Like this I only load 1000 objects at a time in memory.
         public async Task GenerateMapAndWriteToFileAsync(string filePath)
         {
             _fileInteractionService.ClearFileContents(filePath);
@@ -26,10 +27,10 @@
             var nrOfBatches = _nrOfPlanets/_batchSize;
 
             for (var i = 0; i < nrOfBatches - 1; i++)
-                await GeneratePlanetsAndInsert(filePath);
+                await GeneratePlanetsAndInsertAsync(filePath);
         }
 
-        private async Task GeneratePlanetsAndInsert(string filePath)
+        private async Task GeneratePlanetsAndInsertAsync(string filePath)
         {
             var planetsBatch = _planetGeneratingService.GeneratePlanets(_batchSize);
 

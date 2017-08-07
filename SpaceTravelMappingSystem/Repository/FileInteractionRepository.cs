@@ -19,6 +19,8 @@
             _distanceCalculationService = distanceCalculationService;
         }
 
+        //Reading one line at a time saves memory.
+        //Further improvements could be made by reducing the size of the sorted dictionary to hold 10 planets only and sorting on the fly.
         public async Task<SortedDictionary<double, List<Planet>>> ReadFromFileAsync(string filePath)
         {
             using (FileStream sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
@@ -30,7 +32,6 @@
                 string lineOfText;
                 while ((lineOfText = await file.ReadLineAsync()) != null)
                 {
-                    Console.WriteLine(lineOfText);
                     if (lineOfText.Length > 0)
                     {
                         var planets = JsonConvert.DeserializeObject<List<Planet>>(lineOfText);
@@ -45,7 +46,6 @@
         public async Task WriteToFileAsync(string filePath, object data)
         {
             var dataInJson = JsonConvert.SerializeObject(data) + Environment.NewLine;
-            Console.WriteLine("Writing: " + dataInJson);
             byte[] encodedText = Encoding.Unicode.GetBytes(dataInJson);
 
             using (FileStream sourceStream = new FileStream(filePath,
@@ -53,6 +53,7 @@
                 bufferSize: BufferSize, useAsync: true))
             {
                 await sourceStream.WriteAsync(encodedText, 0, encodedText.Length);
+                sourceStream.Close();
             };
         }
 
@@ -60,6 +61,10 @@
         {
             File.WriteAllText(filePath, String.Empty);
         }
+
+        //I am discarding all planets except the inhabitable ones. in 24h the max colonized space would be 250000 square km which is less than half of the smallest planet.
+        // I considered that both inhabitable and uninhabitable planets would have the same size requirements even thought the text points this out for inhabitable ones. 
+        // An uninhabitable planet less than 250000 square km could be made inhabitable but that would make it 2000 times smaller than earth so it wouldn't be worth it.
 
         private void AddToDictionary(SortedDictionary<double, List<Planet>> d, List<Planet> planets)
         {

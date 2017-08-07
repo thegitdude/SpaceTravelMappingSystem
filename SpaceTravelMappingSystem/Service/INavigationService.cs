@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using SpaceTravelMappingSystem.Model;
-
-namespace SpaceTravelMappingSystem.Service
+﻿namespace SpaceTravelMappingSystem.Service
 {
     using System.Threading.Tasks;
+    using Model;
 
     public interface INavigationService
     {
-        Task<List<Planet>> GetTravelDetailsAsync(string filePath);
+        Task<NavigationProcessingResult> GetTravelDetailsAsync(string filePath);
     }
 }

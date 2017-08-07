@@ -1,42 +1,48 @@
-﻿using System;
-using Autofac;
-using SpaceTravelMappingSystem.Service;
-using System.Collections.Generic;
-using SpaceTravelMappingSystem.Model;
-using System.Threading.Tasks;
-
-namespace SpaceTravelMappingSystem
+﻿namespace SpaceTravelMappingSystem
 {
-    using System.Configuration;
-    using Repository;
+    using System;
+    using System.Threading.Tasks;
+    using Autofac;
+    using Service;
     using Utility;
 
+    //In order to restore the package dependencies, run paket.bootstrapper.exe inside the .paket folder.
+    //The bootstrapper will download the paket.exe file.
+    //use the paket install command.
+    
     public class Program
     {
-        private static IContainer Container;
+        private static IContainer _container;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Process().Wait();
         }
 
-        static async Task Process()
+        private static async Task Process()
         {
             var filePath = ConfigurationReader.ReadString("filePath");
 
-            Container = DependencyResolver.ResolveDependencies();
+            _container = DependencyResolver.ResolveDependencies();
 
-            using (var scope = Container.BeginLifetimeScope())
+            using (var scope = _container.BeginLifetimeScope())
             {
                 Console.WriteLine("Starting planet generation");
                 var spaceMapGenerator = scope.Resolve<ISpaceMapGenerator>();
                 await spaceMapGenerator.GenerateMapAndWriteToFileAsync(filePath);
 
-                var calculator = scope.Resolve<IFileInteractionRepository>();
-                var result = await calculator.ReadFromFileAsync(filePath);
-                Console.WriteLine("Number of Planets retrieved: " + result.Count);
+                var calculator = scope.Resolve<INavigationService>();
+                var result = await calculator.GetTravelDetailsAsync(filePath).ConfigureAwait(false);
+                Console.WriteLine($"Maximum colonization surface: {result.MaxColonizableSpace} km2" );
+                Console.WriteLine("This is the list of the 10 closes inhabitable planets");
+                var i = 0;
+                result.ClosestPlanets.ForEach(x =>
+                {
+                    Console.WriteLine($"Planet{i} x={x.X}, y={x.Y}, z={x.Z}, size={x.Size}");
+                    i++;
+                });
             }
-
+            Console.WriteLine("Hit enter to close the program.");
             Console.ReadLine();
         }
     }
